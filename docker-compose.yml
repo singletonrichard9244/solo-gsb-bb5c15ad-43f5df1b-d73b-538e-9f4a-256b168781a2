@@ -1,0 +1,17 @@
+services:
+  token-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # 生产环境务必改成足够长的随机串，例如：openssl rand -hex 32
+      TOKEN_SECRET: ${TOKEN_SECRET:-dev-only-secret-change-me}
+      TOKEN_DEFAULT_TTL: ${TOKEN_DEFAULT_TTL:-300}
+      TOKEN_MAX_TTL: ${TOKEN_MAX_TTL:-3600}
+    volumes:
+      - token-data:/data        # SQLite 持久化（nonce）
+      - ./files:/files:ro       # 演示下载目录（只读挂载）
+    restart: unless-stopped
+
+volumes:
+  token-data:
